@@ -27,7 +27,7 @@ uses
 
 procedure TMainAction.Gateway(Method: string);
 var
-  Req, Res: TStringStream;
+  SS: TStringStream;
   BaseUrl: string = 'http://192.168.103.153:8090';
   Url, Name, Value: string;
   Client: TFPHTTPClient;
@@ -35,8 +35,7 @@ var
   StatusCode: integer;
 begin
   Client := TFPHTTPClient.Create(nil);
-  Res := TStringStream.Create('');
-  Req := TStringStream.Create('');
+  SS := TStringStream.Create('');
   try
     Url := BaseUrl + TheRequest.URI;
     System.Writeln;
@@ -47,7 +46,7 @@ begin
     begin
       Name := TheRequest.FieldNames[i];
       Value := TheRequest.FieldValues[i];
-      if (Name = 'Authorization') or (Name = 'X-API-KEY') then
+      if (Name = 'Authorization') or (Name = 'X-API-KEY') or (Name = 'Accept') or (Name = 'Content-Type') then
       begin
         System.Writeln(' - ' + Name + ': ' + Value);
         Client.AddHeader(Name, Value);
@@ -58,9 +57,9 @@ begin
       try
         if TheRequest.Content <> '' then
           System.Writeln(' - Content: ' + TheRequest.Content);
-        Req.WriteString(TheRequest.Content);
-        Client.RequestBody := Req;
-        Client.HTTPMethod(Method, Url, Res, [200, 302, 304, 400, 401, 403, 404, 500]);
+        Client.RequestBody := TStringStream.Create(TheRequest.Content);
+		Client.RequestBody.Position := 0;
+        Client.HTTPMethod(Method, Url, SS, [200, 302, 304, 400, 401, 403, 404, 500]);
         StatusCode := Client.ResponseStatusCode;
       except
         on E: Exception do
@@ -77,14 +76,14 @@ begin
     TheResponse.SetCustomHeader('Access-Control-Allow-Headers', 'content-type,authorization,x-api-key');
     TheResponse.SetCustomHeader('Access-Control-Allow-Credentials','true');
     TheResponse.SetCustomHeader('Access-Control-Allow-Methods','GET,POST,PUT,DELETE');
-    TheResponse.Content := Res.DataString;
+    TheResponse.SetCustomHeader('Content-Type', 'application/json');
+    TheResponse.Content := SS.DataString;
     System.Writeln(' + Status: ', StatusCode);
-    if Res.Size > 0 then
+    if SS.Size > 0 then
       System.Writeln(' + Content: ' + TheResponse.Content);
   finally
     FreeAndNil(Client);
-    FreeAndNil(Res);
-    FreeAndNil(Req);
+    FreeAndNil(SS);
   end;
 end;
 
