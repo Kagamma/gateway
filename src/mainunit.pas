@@ -27,7 +27,7 @@ uses
 
 procedure TMainAction.Gateway(Method: string);
 var
-  SS: TStringStream;
+  Req, Res: TStringStream;
   BaseUrl: string = 'http://192.168.103.153:8090';
   Url, Name, Value: string;
   Client: TFPHTTPClient;
@@ -35,7 +35,8 @@ var
   StatusCode: integer;
 begin
   Client := TFPHTTPClient.Create(nil);
-  SS := TStringStream.Create('');
+  Res := TStringStream.Create('');
+  Req := TStringStream.Create('');
   try
     Url := BaseUrl + TheRequest.URI;
     System.Writeln;
@@ -44,18 +45,22 @@ begin
     System.Writeln(Method + ': ' + Url);
     for i := 0 to TheRequest.FieldCount - 1 do
     begin
-	  Name := TheRequest.FieldNames[i];
-	  Value := TheRequest.FieldValues[i];
-	  if (Name = 'Authorization') or (Name = 'X-API-KEY') then
-	  begin
+      Name := TheRequest.FieldNames[i];
+      Value := TheRequest.FieldValues[i];
+      if (Name = 'Authorization') or (Name = 'X-API-KEY') then
+      begin
         System.Writeln(' - ' + Name + ': ' + Value);
         Client.AddHeader(Name, Value);
-	  end;
+      end;
     end;
     if Method <> 'OPTIONS' then
     begin
       try
-        Client.HTTPMethod(Method, Url, SS, [200, 302, 304, 400, 401, 403, 404, 500]);
+        if TheRequest.Content <> '' then
+          System.Writeln(' - Content: ' + TheRequest.Content);
+        Req.WriteString(TheRequest.Content);
+        Client.RequestBody := Req;
+        Client.HTTPMethod(Method, Url, Res, [200, 302, 304, 400, 401, 403, 404, 500]);
         StatusCode := Client.ResponseStatusCode;
       except
         on E: Exception do
@@ -69,16 +74,17 @@ begin
       StatusCode := 200;
     TheResponse.Code := StatusCode;
     TheResponse.SetCustomHeader('Access-Control-Allow-Origin', '*');
-    TheResponse.SetCustomHeader('Access-Control-Allow-Headers', 'authorization,x-api-key');
+    TheResponse.SetCustomHeader('Access-Control-Allow-Headers', 'content-type,authorization,x-api-key');
     TheResponse.SetCustomHeader('Access-Control-Allow-Credentials','true');
     TheResponse.SetCustomHeader('Access-Control-Allow-Methods','GET,POST,PUT,DELETE');
-    TheResponse.Content := SS.DataString;
+    TheResponse.Content := Res.DataString;
     System.Writeln(' + Status: ', StatusCode);
-    if SS.Size > 0 then
+    if Res.Size > 0 then
       System.Writeln(' + Content: ' + TheResponse.Content);
   finally
     FreeAndNil(Client);
-    FreeAndNil(SS);
+    FreeAndNil(Res);
+    FreeAndNil(Req);
   end;
 end;
 
