@@ -60,6 +60,8 @@ begin
     else
       StatusCode := 200;
     TheResponse.Code := StatusCode;
+    TheResponse.SetCustomHeader('Access-Control-Allow-Origin', '*');
+    TheResponse.SetCustomHeader('Access-Control-Allow-Credentials','true');
     Writeln(SS.DataString);
     System.Writeln(' + Status: ', StatusCode);
     if SS.Size > 0 then

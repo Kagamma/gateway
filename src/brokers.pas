@@ -11,7 +11,6 @@ implementation
 
 initialization
   BrookSettings.Port := 4444;
-  BrookSettings.AllowOrigin := '*';
   TBrookHTTPApplication(BrookApp.Instance).Threaded := true;
 
 end.
