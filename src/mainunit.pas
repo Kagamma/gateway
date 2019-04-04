@@ -44,16 +44,21 @@ begin
       System.Writeln(' - ' + TheRequest.FieldNames[i] + ': ' + TheRequest.FieldValues[i]);
       Client.AddHeader(TheRequest.FieldNames[i], TheRequest.FieldValues[i]);
     end;
-    try
-      Client.HTTPMethod(Method, Url, SS, [200, 302, 304, 400, 401, 403, 404, 500]);
-      StatusCode := Client.ResponseStatusCode;
-    except
-      on E: Exception do
-      begin
-        StatusCode := 500;
-        System.Writeln(' * ' + E.Message);
+    if Method <> 'OPTIONS' then
+    begin
+      try
+        Client.HTTPMethod(Method, Url, SS, [200, 302, 304, 400, 401, 403, 404, 500]);
+        StatusCode := Client.ResponseStatusCode;
+      except
+        on E: Exception do
+        begin
+          StatusCode := 500;
+          System.Writeln(' * ' + E.Message);
+        end;
       end;
-    end;
+    end
+    else
+      StatusCode := 200;
     TheResponse.Code := StatusCode;
     TheResponse.SetCustomHeader('Access-Control-Allow-Origin', '*');
     Writeln(SS.DataString);
