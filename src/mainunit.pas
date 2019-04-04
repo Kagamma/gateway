@@ -28,8 +28,8 @@ uses
 procedure TMainAction.Gateway(Method: string);
 var
   SS: TStringStream;
-  BaseUrl: string = 'http://localhost:8090';
-  Url: string;
+  BaseUrl: string = 'http://192.168.103.153:8090';
+  Url, Name, Value: string;
   Client: TFPHTTPClient;
   i: integer;
   StatusCode: integer;
@@ -41,8 +41,13 @@ begin
     System.Writeln(Method + ': ' + Url);
     for i := 0 to TheRequest.FieldCount - 1 do
     begin
-      System.Writeln(' - ' + TheRequest.FieldNames[i] + ': ' + TheRequest.FieldValues[i]);
-      Client.AddHeader(TheRequest.FieldNames[i], TheRequest.FieldValues[i]);
+	  Name := TheRequest.FieldNames[i];
+	  Value := TheRequest.FieldValues[i];
+	  if (Name = 'Authorization') or (Name = 'X-API-KEY') then
+	  begin
+        System.Writeln(' - ' + Name + ': ' + Value);
+        Client.AddHeader(Name, Value);
+	  end;
     end;
     if Method <> 'OPTIONS' then
     begin
@@ -61,8 +66,9 @@ begin
       StatusCode := 200;
     TheResponse.Code := StatusCode;
     TheResponse.SetCustomHeader('Access-Control-Allow-Origin', '*');
+    TheResponse.SetCustomHeader('Access-Control-Allow-Headers', 'authorization,x-api-key');
     TheResponse.SetCustomHeader('Access-Control-Allow-Credentials','true');
-    Writeln(SS.DataString);
+    TheResponse.Content := SS.DataString;
     System.Writeln(' + Status: ', StatusCode);
     if SS.Size > 0 then
       System.Writeln(' + Content: ' + SS.DataString);
