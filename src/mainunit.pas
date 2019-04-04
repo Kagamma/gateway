@@ -38,6 +38,9 @@ begin
   SS := TStringStream.Create('');
   try
     Url := BaseUrl + TheRequest.URI;
+    System.Writeln;
+    System.Writeln('---------------------------------');
+    System.Writeln;
     System.Writeln(Method + ': ' + Url);
     for i := 0 to TheRequest.FieldCount - 1 do
     begin
