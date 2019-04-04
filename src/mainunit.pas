@@ -28,7 +28,7 @@ uses
 procedure TMainAction.Gateway(Method: string);
 var
   SS: TStringStream;
-  BaseUrl: string = 'http://192.168.103.153:8090';
+  BaseUrl: string = 'http://localhost:8090';
   Url, Name, Value: string;
   Client: TFPHTTPClient;
   i: integer;

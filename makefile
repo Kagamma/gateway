@@ -19,7 +19,7 @@ clean:
 	if exist ${RELEASE_PATH} ( rmdir /s /q ${RELEASE_PATH} )
 
 build:
-	md || true
+	mkdir build || true
 	fpc ${MAIN} ${UNITS} ${INCLUDES} ${LIBS} ${BUILD_OUTPUT} ${ARGS} -Mdelphi -g
 
 release:
