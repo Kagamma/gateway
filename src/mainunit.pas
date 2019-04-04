@@ -38,7 +38,7 @@ begin
   SS := TStringStream.Create('');
   try
     Url := BaseUrl + TheRequest.URI;
-    System.Writeln('Send request to: ' + Url);
+    System.Writeln(Method + ': ' + Url);
     for i := 0 to TheRequest.FieldCount - 1 do
     begin
       System.Writeln(' - ' + TheRequest.FieldNames[i] + ': ' + TheRequest.FieldValues[i]);
@@ -60,7 +60,7 @@ begin
     System.Writeln(' + Status: ', StatusCode);
     if SS.Size > 0 then
       System.Writeln(' + Content: ' + SS.DataString);
-    System.Writeln('Done sending request to: ' + Url);
+    System.Writeln('Done ' + Method + ': ' + Url);
   finally
     FreeAndNil(Client);
     FreeAndNil(SS);
