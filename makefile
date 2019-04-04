@@ -11,7 +11,7 @@ BUILD_OUTPUT = -FE${BUILD_PATH} -FU${BUILD_PATH}
 RELEASE_OUTPUT = -FE${RELEASE_PATH} -FU${BUILD_PATH}
 
 install:
-	git submodule update --recursive
+	git submodule update --init --recursive
 	git --git-dir=modules/brookframework/.git --work-tree=modules/brookframework checkout 5c80b9bb122850a2fbbfe1ed3bc0d47e09c50e06
 
 clean:
