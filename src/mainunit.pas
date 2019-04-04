@@ -28,8 +28,8 @@ uses
 procedure TMainAction.Gateway(Method: string);
 var
   SS: TStringStream;
-  BaseUrl: string = 'http://192.168.103.153:8090';
-  Url, Name, Value: string;
+  BaseUrl: string = 'http://localhost:8090';
+  Url, Name, Value, ContentType: string;
   Client: TFPHTTPClient;
   i: integer;
   StatusCode: integer;
@@ -51,6 +51,8 @@ begin
         System.Writeln(' - ' + Name + ': ' + Value);
         Client.AddHeader(Name, Value);
       end;
+      if Name = 'Content-Type' then
+        ContentType := Value;
     end;
     if Method <> 'OPTIONS' then
     begin
@@ -76,7 +78,7 @@ begin
     TheResponse.SetCustomHeader('Access-Control-Allow-Headers', 'content-type,authorization,x-api-key');
     TheResponse.SetCustomHeader('Access-Control-Allow-Credentials','true');
     TheResponse.SetCustomHeader('Access-Control-Allow-Methods','GET,POST,PUT,DELETE');
-    TheResponse.SetCustomHeader('Content-Type', 'application/json');
+    TheResponse.SetCustomHeader('Content-Type', ContentType);
     TheResponse.Content := SS.DataString;
     System.Writeln(' + Status: ', StatusCode);
     if SS.Size > 0 then
