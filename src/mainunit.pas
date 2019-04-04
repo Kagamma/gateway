@@ -74,8 +74,7 @@ begin
     TheResponse.Content := SS.DataString;
     System.Writeln(' + Status: ', StatusCode);
     if SS.Size > 0 then
-      System.Writeln(' + Content: ' + SS.DataString);
-    System.Writeln('Done ' + Method + ': ' + Url);
+      System.Writeln(' + Content: ' + TheResponse.Content);
   finally
     FreeAndNil(Client);
     FreeAndNil(SS);
