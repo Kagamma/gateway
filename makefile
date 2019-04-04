@@ -33,4 +33,4 @@ test:
 	${BUILD_PATH}\gatewayTests
 
 run:
-	${BUILD_PATH}\gateway
+	${BUILD_PATH}/gateway
