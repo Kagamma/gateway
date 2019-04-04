@@ -19,7 +19,6 @@ clean:
 	if exist ${RELEASE_PATH} ( rmdir /s /q ${RELEASE_PATH} )
 
 build:
-	if not exist ${BUILD_PATH} ( mkdir ${BUILD_PATH} )
 	fpc ${MAIN} ${UNITS} ${INCLUDES} ${LIBS} ${BUILD_OUTPUT} ${ARGS} -Mdelphi -g
 
 release:
@@ -33,4 +32,4 @@ test:
 	${BUILD_PATH}\gatewayTests
 
 run:
-	${BUILD_PATH}\gateway
+	./${BUILD_PATH}/gateway

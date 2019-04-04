@@ -1,9 +1,7 @@
 program gateway;
 
 uses
-{$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
-{$ENDIF}{$ENDIF}
   BrookApplication, Brokers, MainUnit;
 
 begin

@@ -3,7 +3,6 @@ unit MainUnit;
 interface
 
 uses
-  Crt,
   SysUtils,
   Classes,
   BrookAction,
@@ -39,11 +38,9 @@ begin
   SS := TStringStream.Create('');
   try
     Url := BaseUrl + TheRequest.URI;
-    TextColor(7);
     System.Writeln('Send request to: ' + Url);
     for i := 0 to TheRequest.FieldCount - 1 do
     begin
-      TextColor(Yellow);
       System.Writeln(' - ' + TheRequest.FieldNames[i] + ': ' + TheRequest.FieldValues[i]);
       Client.AddHeader(TheRequest.FieldNames[i], TheRequest.FieldValues[i]);
     end;
@@ -54,18 +51,15 @@ begin
       on E: Exception do
       begin
         StatusCode := 500;
-        TextColor(LightRed);
         System.Writeln(' * ' + E.Message);
       end;
     end;
     TheResponse.Code := StatusCode;
     TheResponse.SetCustomHeader('Access-Control-Allow-Origin', '*');
     Writeln(SS.DataString);
-    TextColor(LightGreen);
     System.Writeln(' + Status: ', StatusCode);
     if SS.Size > 0 then
       System.Writeln(' + Content: ' + SS.DataString);
-    TextColor(7);
     System.Writeln('Done sending request to: ' + Url);
   finally
     FreeAndNil(Client);
