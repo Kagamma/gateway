@@ -28,7 +28,7 @@ uses
 procedure TMainAction.Gateway(Method: string);
 var
   SS: TStringStream;
-  BaseUrl: string = 'http://localhost:8090';
+  BaseUrl: string = 'http://192.168.103.153:8090';
   Url, Name, Value: string;
   Client: TFPHTTPClient;
   i: integer;
@@ -71,6 +71,7 @@ begin
     TheResponse.SetCustomHeader('Access-Control-Allow-Origin', '*');
     TheResponse.SetCustomHeader('Access-Control-Allow-Headers', 'authorization,x-api-key');
     TheResponse.SetCustomHeader('Access-Control-Allow-Credentials','true');
+    TheResponse.SetCustomHeader('Access-Control-Allow-Methods','GET,POST,PUT,DELETE');
     TheResponse.Content := SS.DataString;
     System.Writeln(' + Status: ', StatusCode);
     if SS.Size > 0 then
