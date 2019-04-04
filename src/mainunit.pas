@@ -60,7 +60,6 @@ begin
     else
       StatusCode := 200;
     TheResponse.Code := StatusCode;
-    TheResponse.SetCustomHeader('Access-Control-Allow-Origin', '*');
     Writeln(SS.DataString);
     System.Writeln(' + Status: ', StatusCode);
     if SS.Size > 0 then
