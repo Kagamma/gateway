@@ -34,6 +34,8 @@ var
   i: integer;
   StatusCode: integer;
 begin
+  if ParamCount > 0 then
+    BaseUrl := ParamStr(1);
   Client := TFPHTTPClient.Create(nil);
   SS := TStringStream.Create('');
   try
@@ -60,7 +62,7 @@ begin
         if TheRequest.Content <> '' then
           System.Writeln(' - Content: ' + TheRequest.Content);
         Client.RequestBody := TStringStream.Create(TheRequest.Content);
-		Client.RequestBody.Position := 0;
+		    Client.RequestBody.Position := 0;
         Client.HTTPMethod(Method, Url, SS, [200, 302, 304, 400, 401, 403, 404, 500]);
         StatusCode := Client.ResponseStatusCode;
       except
